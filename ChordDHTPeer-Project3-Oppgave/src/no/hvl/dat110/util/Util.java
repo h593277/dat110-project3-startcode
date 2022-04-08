@@ -44,6 +44,18 @@ public class Util {
 		// implement: read the descriptions above
 		boolean cond = false;
 
+		if(lower.compareTo(upper) > 0)
+		{
+			if(id.compareTo(lower) >= 0 || id.compareTo(upper) <= 0)
+			{
+				cond = true;
+			}
+			
+		}
+		else if(id.compareTo(lower) >= 0 && id.compareTo(upper) <= 0)
+		{
+			cond = true;
+		}
 		
 		return cond;
 	}

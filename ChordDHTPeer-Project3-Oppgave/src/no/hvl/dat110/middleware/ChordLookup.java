@@ -27,6 +27,22 @@ public class ChordLookup {
 	
 	public NodeInterface findSuccessor(BigInteger key) throws RemoteException {
 		
+		
+		NodeInterface succesor = node.getSuccessor();
+		
+		NodeInterface stub = Util.getProcessStub(succesor.getNodeName(), succesor.getPort());
+		
+		if(Util.computeLogic(key, node.getNodeID().add(BigInteger.ONE), stub.getNodeID()))
+		{
+			return stub;
+		}
+		else
+		{
+			
+			return findHighestPredecessor(key).findSuccessor(key);	
+		}
+
+		
 		// ask this node to find the successor of key
 		
 		// get the successor of the node
@@ -41,7 +57,7 @@ public class ChordLookup {
 		
 		// do return highest_pred.findSuccessor(key) - This is a recursive call until logic returns true
 				
-		return null;					
+						
 	}
 	
 	/**
@@ -52,6 +68,18 @@ public class ChordLookup {
 	 */
 	private NodeInterface findHighestPredecessor(BigInteger key) throws RemoteException {
 		
+		List<NodeInterface> table = node.getFingerTable();
+		
+		for(int i = table.size()-1; i > 0; i--)
+		{
+			NodeInterface n = table.get(i);
+			NodeInterface stub = Util.getProcessStub(n.getNodeName(), n.getPort());
+			if(Util.computeLogic(stub.getNodeID(), node.getNodeID().add(BigInteger.valueOf(1)), key.subtract(BigInteger.valueOf(1))));
+			{
+				return stub;
+			}
+		}
+
 		// collect the entries in the finger table for this node
 		
 		// starting from the last entry, iterate over the finger table
