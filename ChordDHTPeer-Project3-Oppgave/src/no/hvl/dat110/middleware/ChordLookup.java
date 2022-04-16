@@ -32,14 +32,19 @@ public class ChordLookup {
 		
 		NodeInterface stub = Util.getProcessStub(succesor.getNodeName(), succesor.getPort());
 		
-		if(Util.computeLogic(key, node.getNodeID().add(BigInteger.ONE), stub.getNodeID()))
+		if(Util.computeLogic(key, node.getNodeID().add(BigInteger.ONE),  stub.getNodeID()))
 		{
 			return stub;
 		}
 		else
 		{
 			
-			return findHighestPredecessor(key).findSuccessor(key);	
+			NodeInterface high = findHighestPredecessor(key);
+			if(high.getNodeID().equals(node.getNodeID()))
+			{
+				return node;
+			}
+			return high.findSuccessor(key);	
 		}
 
 		
@@ -69,15 +74,17 @@ public class ChordLookup {
 	private NodeInterface findHighestPredecessor(BigInteger key) throws RemoteException {
 		
 		List<NodeInterface> table = node.getFingerTable();
-		
+	
 		for(int i = table.size()-1; i > 0; i--)
 		{
+			BigInteger stubKey = key;
 			NodeInterface n = table.get(i);
 			NodeInterface stub = Util.getProcessStub(n.getNodeName(), n.getPort());
-			if(Util.computeLogic(stub.getNodeID(), node.getNodeID().add(BigInteger.valueOf(1)), key.subtract(BigInteger.valueOf(1))));
+			if(Util.computeLogic(stub.getNodeID(), node.getNodeID().add(BigInteger.ONE),  stubKey.subtract(BigInteger.ONE)));
 			{
 				return stub;
 			}
+			
 		}
 
 		// collect the entries in the finger table for this node
@@ -90,7 +97,7 @@ public class ChordLookup {
 		
 		// if logic returns true, then return the finger (means finger is the closest to key)
 		
-		return (NodeInterface) node;			
+		return node;			
 	}
 	
 	public void copyKeysFromSuccessor(NodeInterface succ) {

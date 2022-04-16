@@ -6,9 +6,7 @@ package no.hvl.dat110.util;
  *
  */
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -35,18 +33,6 @@ public class Hash {
 			e.printStackTrace();
 		}
 		
-		// Task: Hash a given string using MD5 and return the result as a BigInteger.
-		
-		// we use MD5 with 128 bits digest
-		
-		// compute the hash of the input 'entity'
-		
-		// convert the hash into hex format
-		
-		// convert the hex into BigInteger
-		
-		// return the BigInteger
-		
 		return hashint;
 	}
 	
@@ -55,17 +41,6 @@ public class Hash {
 		Integer bits = Hash.bitSize();
 		
 		BigInteger addressSize = BigInteger.valueOf((long) Math.pow(2, bits));
-
-		
-		// Task: compute the address size of MD5
-		
-		// get the digest length
-		
-		// compute the number of bits = digest length * 8
-		
-		// compute the address size = 2 ^ number of bits
-		
-		// return the address size
 		
 		return addressSize;
 	}

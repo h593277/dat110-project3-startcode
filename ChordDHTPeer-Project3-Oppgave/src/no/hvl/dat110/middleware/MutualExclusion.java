@@ -122,7 +122,6 @@ public class MutualExclusion {
 		if(message.equals(node.getMessage()))
 		{
 			message.setAcknowledged(true);
-			queueack.add(message);
 			onMutexAcknowledgementReceived(message);
 		}
 		
@@ -131,21 +130,17 @@ public class MutualExclusion {
 		int caseid = -1;
 		
 		// write if statement to transition to the correct caseid
-		switch(caseid)
+		if(!queueack.contains(message))
 		{
-		case 0:
-			message.setAcknowledged(true);
-			onMutexAcknowledgementReceived(message);
-			break;
-		case 1:
-			queueack.add(message);
-			break;
-		case 2:
-			if(clock.getClock() == message.getClock())
-			{
-				onMutexAcknowledgementReceived(message);
-			}
-			break;
+			caseid = 0;
+		}
+		else if(message.isAcknowledged())
+		{
+			caseid = 1;
+		}
+		else
+		{
+			caseid = 2;
 		}
 		
 		// caseid=0: Receiver is not accessing shared resource and does not want to (send OK to sender)
@@ -166,7 +161,7 @@ public class MutualExclusion {
 			/** case 1: Receiver is not accessing shared resource and does not want to (send OK to sender) */
 			case 0: {
 				// get a stub for the sender from the registry
-				node = new Node(procName, port);
+				NodeInterface noden = Util.getProcessStub(procName, port);
 				message.setAcknowledged(true);
 				// acknowledge message
 				// send acknowledgement back by calling onMutexAcknowledgementReceived()
@@ -189,7 +184,25 @@ public class MutualExclusion {
 			case 2: {
 				if(clock.getClock() == message.getClock())
 				{
+					if(this.node.getNodeID().compareTo(message.getNodeID()) > 0)
+					{
+						onMutexAcknowledgementReceived(message);
+					}
+					else
+					{
+						message.setAcknowledged(true);
+						onMutexAcknowledgementReceived(message);
+					}
+				}
+				else if(clock.getClock() > message.getClock())
+				{
 					onMutexAcknowledgementReceived(message);
+				}
+				else
+				{
+					message.setAcknowledged(true);
+					onMutexAcknowledgementReceived(message);
+					
 				}
 				// check the clock of the sending process
 				// own clock for the multicast message
@@ -222,18 +235,14 @@ public class MutualExclusion {
 		
 		for(Message m : activenodes)
 		{
-			try {
-				node = new Node(m.getNodeIP(), m.getPort());
-			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			NodeInterface noden = Util.getProcessStub(m.getNodeIP(), m.getPort());
+			releaseLocks();
 		}
 		
 		// obtain a stub for each node from the registry
 		
 		// call releaseLocks()
-		releaseLocks();
+		
 	
 	}
 	

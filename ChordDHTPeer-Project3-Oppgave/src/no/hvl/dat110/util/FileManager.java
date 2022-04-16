@@ -56,16 +56,6 @@ public class FileManager {
 	}
 	
 	public void createReplicaFiles() {
-	 	
-		// implement
-		
-		// set a loop where size = numReplicas
-		
-		// replicate by adding the index to filename
-		
-		// hash the replica
-		
-		// store the hash in the replicafiles array.
 		
 		for(int i = 0; i < Util.numReplicas; i++)
 		{
@@ -141,9 +131,6 @@ public class FileManager {
 	public Set<Message> requestActiveNodesForFile(String filename) throws RemoteException {
 		
 		Set<Message> succinfo = new HashSet<Message>();
-		// Task: Given a filename, find all the peers that hold a copy of this file
-		
-		// generate the N replicas from the filename by calling createReplicaFiles()
 		
 		createReplicaFiles();
 		
@@ -171,7 +158,6 @@ public class FileManager {
 	 */
 	public NodeInterface findPrimaryOfItem() {
 
-		// Task: Given all the active peers of a file (activeNodesforFile()), find which is holding the primary copy
 		
 		for(Message m : getActiveNodesforFile())
 		{
@@ -187,14 +173,6 @@ public class FileManager {
 				
 			}
 		}
-		
-		// iterate over the activeNodesforFile
-		
-		// for each active peer (saved as Message)
-		
-		// use the primaryServer boolean variable contained in the Message class to check if it is the primary or not
-		
-		// return the primary
 		
 		return null; 
 	}
